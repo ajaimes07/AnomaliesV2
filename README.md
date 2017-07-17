@@ -1,5 +1,7 @@
 # AnomaliesV2
-Four codes to calculate anomalies. This calculates anomalies of precipitation, using input data contained on a google drive shared  data-PREC-1-year-day. The process takes 3 days in calculating the final result. The directories need to be changed if new variables are desired to be used. 
+Four codes to calculate anomalies. This calculates anomalies of precipitation, using input data contained on a google drive shared  data-PREC-1-year-day
+https://drive.google.com/drive/folders/0B3jfvAFKA3QEaUVhc1BUdHlDTG8?usp=sharing
+. The process takes 3 days in calculating the final result. The directories need to be changed if new variables are desired to be used. 
 CODES:
 anomalies1.m 
 % This is first code to apply. This code takes data which is stored in
