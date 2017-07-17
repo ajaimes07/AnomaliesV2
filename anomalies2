@@ -1,0 +1,45 @@
+
+% This is second code to apply. It generates the "anomalies"
+% Tath is, it takes the data organized by day-year, computes the mean per
+% day along 33 years and then subtract it to the day. As a result, the data
+% is now from - sign values to + sign values
+
+clear all
+close all
+
+% change only this directories for running different variables:
+mydir0  = '../data-PREC-1-year-day';
+mydir   = '../data-PREC-2-day-year';
+dirout  = '../data-PREC-3-day-year-anomalies';
+varname = 'prcp'; % variable name. In this case prcp = precipitation
+
+% Note: if dirout does nto exist as directory, create it
+
+
+
+
+%==========================================================================
+% Most likely no need to modify from this point on
+
+
+list0 = dir([mydir '/*.mat']);
+N     = length(list0);
+
+% to store ln and lat only
+load([mydir0 filesep varname '_1981.mat'])
+
+
+ for k=1:N 
+
+    fprintf('%i out of %i\n',k,N);
+    load([mydir '/' list0(k).name]); % Load the k file .mat
+
+
+    anomaly = days - repmat(mean(days,3),1,1,33); % e.g., cube of day 1 (along 33 years) is averaged and then subtracted to the cube
+
+
+    name = [dirout filesep varname '_day_'  num2str(k,'%0.3d') '_anomalies'];   
+    
+    save (name, 'anomaly','lat','lon');
+    
+end
