@@ -1,0 +1,92 @@
+% This is third code to apply. This code computes percentiles and store a
+% 568x668 matrix with the values (color) of percentile.
+% This code is very slow, it may take up to 24 hours to run
+
+clear all
+close all
+
+mydir = '../data-TAMEAN-4-day-year-anomalies/';
+pcm = 02; 
+pcM = 98;
+varname = 'prcp'; % variable name. In this case prcp = precipitation
+% There is no output dir since the mat file result is saved in this
+% directory (the directory of codes)
+
+
+
+
+%==========================================================================
+% Most likely no need to modify from this point on
+
+
+
+
+list0 = dir([mydir '*.mat']);
+N     = length(list0);
+
+
+
+fprintf('creating supercube\n');
+supercube = zeros(1,668,N*33);
+fprintf('done supercube\n');
+
+per_m = zeros(568,668); % no negative events for precipitation
+per_M = zeros(568,668);
+
+for k0=1:568
+
+
+    fprintf('%i out of %i\n',k0,568);
+    fprintf('==================================\n');
+    for k=1:N % only january 1 along all years
+        
+        if mod(k,20) ==0, fprintf('%i out of %i\n',k,N); end
+        try
+            load([mydir list0(k).name]); % variables "lon", "lat" "anomaly" is loaded
+        catch me0
+            fprintf('error in k0=%d and k=%d\n',k0,k);
+            continue;
+        end
+        
+        anomaly = anomaly(k0,:,:); % operate latitude by latitude (big data!)
+        
+        supercube(1,:,(k-1)*33+1:k*33) = anomaly;
+    end
+
+    per_m(k0,:) = mypercentile(supercube,pcm,3);   % no negative events for precipitation
+    per_M(k0,:) = mypercentile(supercube,pcM,3);
+end
+
+
+
+fprintf('done computing, saving...\n');
+save(['percentile_' num2str(per_m) '_' varname], 'per_m')   % no negative events for precipitation
+save(['percentile_' num2str(per_M) '_' varname], 'per_M')   % no negative events for precipitation
+
+
+fprintf('done\n');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
