@@ -1,0 +1,200 @@
+
+
+% This is fourth code to apply. It counts the thresholded anomalies and
+% display some pics
+
+clear all
+close all
+
+
+mydir = '../data-TAMEAN-4-day-year-anomalies/';
+varname = 'prcp'; % variable name. In this case prcp = precipitation
+pcm = 2;  % this need to be consistent with percentiles already computed previosuly
+pcM = 98;  % this need to be consistent with percentiles already computed previosuly
+
+
+
+%==========================================================================
+% Most likely no need to modify from this point on
+% Except for the visualization part way below
+
+
+
+list0 = dir([mydir '*.mat']);
+N = length(list0);
+
+load(['percentile_' num2str(pcM) '_' varname]) % here variable perm_M is laoded (high percentile)
+load(['percentile_' num2str(pcm) '_' varname]) % here variable perm_m is loaded (low percentile)
+
+
+anom_low_count  = zeros(N,33);
+anom_high_count = zeros(N,33);
+
+PER_M = repmat(per_M,1,1,33);
+PER_m = repmat(per_m,1,1,33);
+
+for k = 1:N
+
+    anomaly_low_threshold = zeros(568,668,33);
+    anomaly_high_threshold = zeros(568,668,33);
+    
+    fprintf('%d out of %d\n',k,N);
+    
+    load ([mydir list0(k).name]); % here varibale "anomaly" 568x668x33 is loaded
+    
+    ind_low_thr  = anomaly <= PER_m;
+    anomaly_low_threshold(ind_low_thr) = anomaly(ind_low_thr);
+    anomaly_low_threshold(isnan(anomaly)) = NaN;
+    
+    ind_high_thr = anomaly >= PER_M;
+    anomaly_high_threshold(ind_high_thr) = anomaly(ind_high_thr);
+    anomaly_high_threshold(isnan(anomaly)) = NaN;
+    
+    
+    anom_low_count(k,:) = squeeze(sum(sum(ind_low_thr,1),2));
+    anom_high_count(k,:) = squeeze(sum(sum(ind_high_thr,1),2));
+    
+    
+    % These two lines uncoment only if you want to store thresholded
+    % anomalies day by day:
+    %save(['Anomalies_prcp' num2str(k,'%.3i') '_low_thrs'], 'anomaly_low_threshold');
+    %save(['Anomalies_prcp' num2str(k,'%.3i') '_high_thrs'], 'anomaly_high_threshold');
+end
+
+save(['anom_' varname '_low_count_perc_' num2str(pcm)],'anom_low_count');
+save(['anom_' varname '_high_count_perc_' num2str(pcM) ],'anom_high_count');
+
+
+
+%% visualization
+
+figure('position',[51   292   746   442])
+plot(sum(anom_high_count),'bx')
+ylim([0 2.5e7])
+title('Total High anomalies TA counted along the year (for 33 years)')
+xlim([0 34])
+xtick = 1:5:34;
+set(gca,'xtick',xtick);
+set(gca,'xticklabel',num2str(xtick(:) + 1980));
+grid on
+xlabel('Year')
+ylabel('Anomalies count')
+
+
+figure('position',[51   292   746   442])
+plot(sum(anom_low_count),'bx')
+ylim([0 2.5e7])
+title('Total Low anomalies TA counted along the year (for 33 years)')
+xlim([0 34])
+xtick = 1:5:34;
+set(gca,'xtick',xtick);
+set(gca,'xticklabel',num2str(xtick(:) + 1980));
+grid on
+xlabel('Year')
+ylabel('Anomalies count')
+
+
+%
+figure('position',[51          85        1304         866])
+    winter_id = ([1:80 351:365])';                  % Notice that this is a vector of index. indiating that winter encompases days #351 to #365 and days #1 to #80
+    spring_id = (81:169)';                          % Notice that this is a vector of index. indiating that summer starts day #170 and ends in day #260
+    summer_id = (170:260)';                         % Notice that this is a vector of index. indiating that summer starts day #170 and ends in day #260
+    fall_id =   (261:350)';                         % Notice that this is a vector of index. indiating that summer starts day #170 and ends in day #260
+    
+    subplot(2,2,1)
+    plot(sum(anom_low_count(winter_id,:)),'bx');    % Here we are summing only for the winter days, hence anomalies counted within winter days along 33 years
+    title('Cold Anomalies counted along the Winter (1981-2013)')
+    grid on
+    xlim([0 34])
+    xtick = 1:5:34;
+    set(gca,'xtick',xtick);
+    set(gca,'xticklabel',num2str(xtick(:) + 1980));
+    ylim([0 1e7])
+    subplot(2,2,2)
+    plot(sum(anom_low_count(spring_id,:)),'bx');    % Here we are summing only for the summer days, hence anomalies counted within summer days along 33 years
+    title('Cold Anomalies counted along the Spring (1981-2013)')
+    grid on
+    xlim([0 34])
+    xtick = 1:5:34;
+    set(gca,'xtick',xtick);
+    set(gca,'xticklabel',num2str(xtick(:) + 1980));
+    ylim([0 1e7])
+    subplot(2,2,3)
+    plot(sum(anom_low_count(summer_id,:)),'bx');    % Here we are summing only for the summer days, hence anomalies counted within summer days along 33 years
+    title('Cold Anomalies counted along the Summer (1981-2013)')
+    grid on
+    xlim([0 34])
+    xtick = 1:5:34;
+    set(gca,'xtick',xtick);
+    set(gca,'xticklabel',num2str(xtick(:) + 1980));    
+    ylim([0 1e7])
+    subplot(2,2,4)
+    plot(sum(anom_low_count(fall_id,:)),'bx');      % Here we are summing only for the summer days, hence anomalies counted within summer days along 33 years
+    title('Cold Anomalies counted along the Fall (1981-2013)')
+    grid on
+     xlim([0 34])
+    xtick = 1:5:34;
+    set(gca,'xtick',xtick);
+    set(gca,'xticklabel',num2str(xtick(:) + 1980));   
+    ylim([0 1e7])
+hold off
+
+
+
+
+figure('position',[51          85        1304         866])
+    winter_id = ([1:80 351:365])';                  % Notice that this is a vector of index. indiating that winter encompases days #351 to #365 and days #1 to #80
+    spring_id = (81:169)';                          % Notice that this is a vector of index. indiating that summer starts day #170 and ends in day #260
+    summer_id = (170:260)';                         % Notice that this is a vector of index. indiating that summer starts day #170 and ends in day #260
+    fall_id =   (261:350)';                         % Notice that this is a vector of index. indiating that summer starts day #170 and ends in day #260
+    
+    subplot(2,2,1)
+    plot(sum(anom_high_count(winter_id,:)),'bx');    % Here we are summing only for the winter days, hence anomalies counted within winter days along 33 years
+    title('High Anomalies counted along the Winter (1981-2013)')
+    grid on
+    xlim([0 34])
+    xtick = 1:5:34;
+    set(gca,'xtick',xtick);
+    set(gca,'xticklabel',num2str(xtick(:) + 1980));
+    ylim([0 1e7])
+    subplot(2,2,2)
+    plot(sum(anom_high_count(spring_id,:)),'bx');    % Here we are summing only for the summer days, hence anomalies counted within summer days along 33 years
+    title('High Anomalies counted along the Spring (1981-2013)')
+    grid on
+    xlim([0 34])
+    xtick = 1:5:34;
+    set(gca,'xtick',xtick);
+    set(gca,'xticklabel',num2str(xtick(:) + 1980));
+    ylim([0 1e7])
+    subplot(2,2,3)
+    plot(sum(anom_high_count(summer_id,:)),'bx');    % Here we are summing only for the summer days, hence anomalies counted within summer days along 33 years
+    title('High Anomalies counted along the Summer (1981-2013)')
+    grid on
+    xlim([0 34])
+    xtick = 1:5:34;
+    set(gca,'xtick',xtick);
+    set(gca,'xticklabel',num2str(xtick(:) + 1980));    
+    ylim([0 1e7])
+    subplot(2,2,4)
+    plot(sum(anom_high_count(fall_id,:)),'bx');      % Here we are summing only for the summer days, hence anomalies counted within summer days along 33 years
+    title('High Anomalies counted along the Fall (1981-2013)')
+    grid on
+     xlim([0 34])
+    xtick = 1:5:34;
+    set(gca,'xtick',xtick);
+    set(gca,'xticklabel',num2str(xtick(:) + 1980));   
+    ylim([0 1e7])
+hold off
+
+
+
+figure
+plot(sum(anom_high_count(summer_id,:)),'gX');   % Here we are summing only for the summer days, hence anomalies counted within summer days along 33 years
+figure
+plot(sum(anom_low_count(summer_id,:)),'gX');   % Here we are summing only for the summer days, hence anomalies counted within summer days along 33 years
+
+
+
+
+
+%}
