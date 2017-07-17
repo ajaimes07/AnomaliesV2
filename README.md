@@ -6,20 +6,20 @@ anomalies1.m
 % original format year-day and accomodate it in format day_year
 % This means, the output files contain a specific day but along 33 years
 
-
 anomalies2.m 
 % This is second code to apply. It generates the "anomalies"
-% Tath is, it takes the data organized by day-year, computes the mean per
-% day along 33 years and then subtract it to the day. As a result, the data
-% is now from - sign values to + sign values
-
-
+% It takes the data organized by day-year, computes the mean per
+% day along 33 years and then subtract it to the day. 
 
 anomalies3_compute_percentile.m 
-
-
+% This is third code to apply. This code computes percentiles and store a
+% 568x668 matrix with the values (color) of percentile.
+% This code is very slow, it may take up to 24 hours to run
 
 anomalies4_threshold_anomalies.m 
+% This is fourth code to apply. It counts the # of events that are above or below the mean.
+% display figures of anomalies
+
 
 Functions:
 mypercentile.m
