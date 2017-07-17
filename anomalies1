@@ -1,0 +1,55 @@
+% This is first code to apply. This code takes data which is stored in
+% original format year-day and accomodate it in format day_year
+% This means, the output files contain a specific day but along 33 years
+
+clear all
+close all
+
+% change only this directories for running different variables:
+mydir   = '../data-PREC-1-year-day'; % input dir
+dirout  = '../data-PREC-2-day-year'; % output dir
+varname = 'prcp'; % variable name. In this case prcp = precipitation
+
+% Note: if dirout does nto exist as directory, create it
+%==========================================================================
+% Most likely no need to modify from this point on
+
+lst = dir(mydir);
+
+% file list:
+flst = {};
+for k = 1:length(lst)
+    
+    if strcmp(lst(k).name,'.') || strcmp(lst(k).name,'..')
+        continue;
+    end
+    
+    flst{end+1} = lst(k).name;
+        
+end
+
+    
+ 
+days = zeros(568,668,33);    
+
+for j = 1:365
+    
+    disp(j);
+    
+    for k=1:length(flst)
+    
+        d = load([mydir filesep flst{k}]);
+
+        days(:,:,k) = d.par(:,:,j);         
+    end
+    
+    fn = [dirout filesep varname '_day_' num2str(j)];
+    save(fn,'days','-v7.3');
+    
+end
+
+
+
+
+
+
