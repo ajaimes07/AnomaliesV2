@@ -1,20 +1,20 @@
 # AnomaliesV2
-Four codes to calculate anomalies. This calculates anomalies of precipitation, using input data contained on a google drive shared  data-PREC-1-year-day
-https://drive.google.com/drive/folders/0B3jfvAFKA3QEaUVhc1BUdHlDTG8?usp=sharing
-. The process takes 3 days in calculating the final result. The directories need to be changed if new variables are desired to be used. 
-CODES:
+Four codes to calculate anomalies. Calculate anomalies of precipitation. 
+INPUT. Data contained on a google drive folder named: data-PREC-1-year-day
+Source: https://drive.google.com/drive/folders/0B3jfvAFKA3QEaUVhc1BUdHlDTG8?usp=sharing
+Note: The process takes 3 days in calculating the final result. The directories need to be changed if new variables are desired to be used. 
+CODE Description:
 anomalies1.m 
-% This is first code to apply. This code takes data which is stored in
-% original format year-day and accomodate it in format day_year
+% Source code. Reformats timestamp from year-day to format day_year
 % This means, the output files contain a specific day but along 33 years
 
 anomalies2.m 
-% This is second code to apply. It generates the "anomalies"
+Calculates "anomalies"
 % It takes the data organized by day-year, computes the mean per
-% day along 33 years and then subtract it to the day. 
+% day along 33 years and then subtract the observed daily value.
 
 anomalies3_compute_percentile.m 
-% This is third code to apply. This code computes percentiles and store a
+% This is third code to apply. Computes percentiles and store a
 % 568x668 matrix with the values (color) of percentile.
 % This code is very slow, it may take up to 24 hours to run
 
